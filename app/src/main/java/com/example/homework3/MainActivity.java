@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         seekBar = findViewById(R.id.seekBar);
 
         seekBar.setMax(10);
-        //threadPool = Executors.newFixedThreadPool(2);
+        threadPool = Executors.newFixedThreadPool(2);
 
         progressBar = new ProgressBar(this);
         progressBar.setMax(100);
@@ -89,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 complexity = String.valueOf(seekBar.getProgress());
-                //threadPool.execute(new DoWork());
-                new Thread(new DoWork()).start();
+                threadPool.execute(new DoWork());
+                //new Thread(new DoWork()).start();
             }
         });
     }
