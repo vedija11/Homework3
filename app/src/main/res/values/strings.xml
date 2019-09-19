@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Homework3</string>
+    <string name="tv_complexity">Select Complexity :</string>
+    <string name="tv_min">Minimum:</string>
+    <string name="tv_max">Maximum:</string>
+    <string name="tv_avg">Average:</string>
+    <string name="button_thread">Generate Number Thread</string>
+</resources>
