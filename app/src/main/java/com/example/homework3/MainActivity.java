@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         seekBar = findViewById(R.id.seekBar);
 
         seekBar.setMax(10);
+
         threadPool = Executors.newFixedThreadPool(2);
 
         progressBar.setMax(100);
@@ -97,8 +99,13 @@ public class MainActivity extends AppCompatActivity {
         button_thread.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                complexity = String.valueOf(seekBar.getProgress());
-                threadPool.execute(new DoWork());
+                if (seekBar.getProgress() != 0) {
+                    complexity = String.valueOf(seekBar.getProgress());
+                    threadPool.execute(new DoWork());
+                } else
+                    Toast.makeText(getApplicationContext(), "Please Select Complexity", Toast.LENGTH_LONG).show();
+
+
             }
         });
     }
@@ -131,14 +138,12 @@ public class MainActivity extends AppCompatActivity {
             list.add(min);
             list.add(max);
             list.add(avg);
-            for (int i = 0; i < 100; i++) {
-                for (int j = 0; j < 100000000; j++) {
-                }
-                Message message = new Message();
-                message.what = STATUS_PROGRESS;
-                message.obj = i;
-                handler.sendMessage(message);
-            }
+
+            Message message = new Message();
+            message.what = STATUS_PROGRESS;
+            message.obj = 0;
+            handler.sendMessage(message);
+
 
             Message stopMessage = new Message();
             stopMessage.what = STATUS_STOP;
