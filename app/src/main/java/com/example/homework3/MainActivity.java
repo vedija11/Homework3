@@ -52,9 +52,26 @@ public class MainActivity extends AppCompatActivity {
         seekBar.setMax(10);
         //threadPool = Executors.newFixedThreadPool(2);
 
-        progressBar = new ProgressBar(this);
+        // progressBar = new ProgressBar(MainActivity.this);
         progressBar.setMax(100);
+        tv_times.setText(String.valueOf(seekBar.getProgress()) + " time");
 
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                tv_times.setText(String.valueOf(seekBar.getProgress()) + " times");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         handler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
@@ -68,17 +85,16 @@ public class MainActivity extends AppCompatActivity {
                     case DoWork.STATUS_PROGRESS:
                         /*progressBar.setProgress(msg.getData().getInt(DoWork.PROGRESS_KEY));
                         Log.d("demo", "Progress.... " + msg.getData().getInt(DoWork.PROGRESS_KEY));*/
-                        progressBar.setProgress(progressBar.getProgress()+1);
-                        Log.d("demo","Progress.... " + Integer.valueOf(progressBar.getProgress()));
-                        tv_times.setText(String.valueOf(seekBar.getProgress()) + " times");
-                        tv_minVal.setText(list.get(0).toString());
-                        tv_maxVal.setText(list.get(1).toString());
-                        tv_avgVal.setText(list.get(2).toString());
+                        progressBar.setProgress(Integer.valueOf(msg.obj.toString()));
+                        Log.d("demo", "Progress.... " + msg.obj);
                         break;
 
                     case DoWork.STATUS_STOP:
                         progressBar.setVisibility(View.INVISIBLE);
                         Log.d("demo", "Stopping.... ");
+                        tv_minVal.setText(list.get(0).toString());
+                        tv_maxVal.setText(list.get(1).toString());
+                        tv_avgVal.setText(list.get(2).toString());
                         break;
                 }
                 return false;
@@ -95,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    class DoWork implements Runnable{
+    class DoWork implements Runnable {
         static final int STATUS_START = 0x00;
         static final int STATUS_PROGRESS = 0x01;
         static final int STATUS_STOP = 0x02;
@@ -107,24 +123,33 @@ public class MainActivity extends AppCompatActivity {
             startMessage.what = STATUS_START;
             handler.sendMessage(startMessage);
 
+            Log.d("Demo", "run: " + complexity);
             HeavyWork hw = new HeavyWork();
             list = hw.getArrayNumbers(Integer.valueOf(complexity));
+            Log.d("Demo", "run: " + list);
             Double min = Collections.min(list);
             Double max = Collections.max(list);
 
             Double sum = 0.0;
-            for (Double each:list){
+            for (Double each : list) {
                 sum += each;
             }
 
-            Double avg = sum/list.size();
+            Double avg = sum / list.size();
             list.clear();
             list.add(min);
             list.add(max);
             list.add(avg);
-            Message message = new Message();
-            message.what = STATUS_PROGRESS;
-            handler.sendMessage(message);
+            int i;
+            for (i = 0; i < 100; i++) {
+                for (int j = 0; j < 100000000; j++) {
+                }
+                Message message = new Message();
+                message.what = STATUS_PROGRESS;
+                message.obj = i;
+                handler.sendMessage(message);
+            }
+
             /*for(int i=0; i<100; i++){
                 for(int j=0; j<10; j++){
                     HeavyWork hw = new HeavyWork();
