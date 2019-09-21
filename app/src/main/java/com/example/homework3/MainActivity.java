@@ -1,9 +1,7 @@
 package com.example.homework3;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         tv_times = findViewById(R.id.tv_times);
         tv_minVal = findViewById(R.id.tv_minVal);
         tv_maxVal = findViewById(R.id.tv_maxVal);
@@ -52,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         seekBar.setMax(10);
         threadPool = Executors.newFixedThreadPool(2);
 
-        // progressBar = new ProgressBar(MainActivity.this);
         progressBar.setMax(100);
         tv_times.setText(String.valueOf(seekBar.getProgress()) + " time");
 
@@ -79,19 +74,17 @@ public class MainActivity extends AppCompatActivity {
                     case DoWork.STATUS_START:
                         progressBar.setProgress(0);
                         progressBar.setVisibility(View.VISIBLE);
-                        Log.d("demo", "Starting.... ");
+                        Log.d("Demo", "Starting.... ");
                         break;
 
                     case DoWork.STATUS_PROGRESS:
-                        /*progressBar.setProgress(msg.getData().getInt(DoWork.PROGRESS_KEY));
-                        Log.d("demo", "Progress.... " + msg.getData().getInt(DoWork.PROGRESS_KEY));*/
                         progressBar.setProgress(Integer.valueOf(msg.obj.toString()));
-                        Log.d("demo", "Progress.... " + msg.obj);
+                        Log.d("Demo", "Progress.... " + msg.obj);
                         break;
 
                     case DoWork.STATUS_STOP:
                         progressBar.setVisibility(View.INVISIBLE);
-                        Log.d("demo", "Stopping.... ");
+                        Log.d("Demo", "Stopping.... ");
                         tv_minVal.setText(list.get(0).toString());
                         tv_maxVal.setText(list.get(1).toString());
                         tv_avgVal.setText(list.get(2).toString());
@@ -106,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 complexity = String.valueOf(seekBar.getProgress());
                 threadPool.execute(new DoWork());
-                //new Thread(new DoWork()).start();
             }
         });
     }
@@ -115,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
         static final int STATUS_START = 0x00;
         static final int STATUS_PROGRESS = 0x01;
         static final int STATUS_STOP = 0x02;
-        static final String PROGRESS_KEY = "PROGRESS";
 
         @Override
         public void run() {
@@ -140,8 +131,7 @@ public class MainActivity extends AppCompatActivity {
             list.add(min);
             list.add(max);
             list.add(avg);
-            int i;
-            for (i = 0; i < 100; i++) {
+            for (int i = 0; i < 100; i++) {
                 for (int j = 0; j < 100000000; j++) {
                 }
                 Message message = new Message();
@@ -150,80 +140,9 @@ public class MainActivity extends AppCompatActivity {
                 handler.sendMessage(message);
             }
 
-            /*for(int i=0; i<100; i++){
-                for(int j=0; j<10; j++){
-                    HeavyWork hw = new HeavyWork();
-                    list = hw.getArrayNumbers(Integer.valueOf(complexity));
-                    Double min = Collections.min(list);
-                    Double max = Collections.max(list);
-
-                    Double sum = 0.0;
-                    for (Double each:list){
-                        sum += each;
-                    }
-
-                    Double avg = sum/list.size();
-                    list.clear();
-                    list.add(min);
-                    list.add(max);
-                    list.add(avg);
-                }
-                Message message = new Message();
-                message.what = STATUS_PROGRESS;
-                Bundle bundle = new Bundle();
-                bundle.putInt(PROGRESS_KEY, (Integer)i);
-                message.setData(bundle);
-                handler.sendMessage(message);
-            }*/
-
             Message stopMessage = new Message();
             stopMessage.what = STATUS_STOP;
             handler.sendMessage(stopMessage);
         }
     }
-/*
-    class DoWork extends AsyncTask<String, Integer, ArrayList<Double>> {
-
-        @Override
-        protected void onPreExecute() {
-            progressBar.setMax(100);
-            progressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Double> aDouble) {
-            progressBar.setVisibility(View.INVISIBLE);
-            tv_times.setText(String.valueOf(seekBar.getProgress()) + " times");
-            tv_minVal.setText(aDouble.get(0).toString());
-            tv_maxVal.setText(aDouble.get(1).toString());
-            tv_avgVal.setText(aDouble.get(2).toString());
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            progressBar.setProgress(progressBar.getProgress()+1);
-        }
-
-        @Override
-        protected ArrayList<Double> doInBackground(String... strings) {
-            HeavyWork hw = new HeavyWork();
-            list = hw.getArrayNumbers(Integer.parseInt(strings[0]));
-            Double min = Collections.min(list);
-            Double max = Collections.max(list);
-
-            Double sum = 0.0;
-            for (Double each:list){
-                sum += each;
-            }
-
-            Double avg = sum/list.size();
-            list.clear();
-            list.add(min);
-            list.add(max);
-            list.add(avg);
-
-            return list;
-        }
-    }*/
-
 }
