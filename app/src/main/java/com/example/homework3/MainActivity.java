@@ -1,3 +1,10 @@
+/*
+Homework 3
+Group No:22
+Group Members: Neeraj Auti
+               Vedija Jagtap
+*/
+
 package com.example.homework3;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,10 +53,9 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         seekBar = findViewById(R.id.seekBar);
 
-        seekBar.setMax(10);
-
         threadPool = Executors.newFixedThreadPool(2);
 
+        seekBar.setMax(10);
         progressBar.setMax(100);
         tv_times.setText(String.valueOf(seekBar.getProgress()) + " time");
 
@@ -69,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
         handler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
@@ -102,10 +109,13 @@ public class MainActivity extends AppCompatActivity {
                 if (seekBar.getProgress() != 0) {
                     complexity = String.valueOf(seekBar.getProgress());
                     threadPool.execute(new DoWork());
-                } else
-                    Toast.makeText(getApplicationContext(), "Please Select Complexity", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please Select Complexity greater than 0", Toast.LENGTH_LONG).show();
+                    tv_minVal.setText("");
+                    tv_maxVal.setText("");
+                    tv_avgVal.setText("");
 
-
+                }
             }
         });
     }
@@ -121,10 +131,10 @@ public class MainActivity extends AppCompatActivity {
             startMessage.what = STATUS_START;
             handler.sendMessage(startMessage);
 
-            Log.d("Demo", "run: " + complexity);
+            Log.d("Demo", "Complexity: " + complexity);
             HeavyWork hw = new HeavyWork();
             list = hw.getArrayNumbers(Integer.valueOf(complexity));
-            Log.d("Demo", "run: " + list);
+            Log.d("Demo", "List: " + list);
             Double min = Collections.min(list);
             Double max = Collections.max(list);
 
@@ -139,11 +149,14 @@ public class MainActivity extends AppCompatActivity {
             list.add(max);
             list.add(avg);
 
-            Message message = new Message();
-            message.what = STATUS_PROGRESS;
-            message.obj = 0;
-            handler.sendMessage(message);
-
+            for(int i=0; i<100; i++) {
+                for(int j=0; j<10000000; j++){
+                }
+                Message message = new Message();
+                message.what = STATUS_PROGRESS;
+                message.obj = i;
+                handler.sendMessage(message);
+            }
 
             Message stopMessage = new Message();
             stopMessage.what = STATUS_STOP;
